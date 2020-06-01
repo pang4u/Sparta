@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+  <title>핑크퐁 머그컵</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      font-family: 'Stylish', sans-serif;
+    }
+
+    .wrap {
+      margin: auto;
+      width: 600px;
+    }
+
+    .comment {
+      font-weight: bold;
+      color: blue;
+    }
+
+    .input_body {
+      margin: auto;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      width: 650px;
+    }
+
+    .order-box {
+      width: 650px;
+      text-align: center;
+    }
+
+    .card-img {
+      background-image: url('https://store-cf.pinkfong.com/__sized__/products/IT267/b3/32/5b/12514fafb867652560728715-crop-c0-5__0-5-600x600-85.jpg');
+      background-position: center;
+      background-color: cover;
+      margin: auto;
+      width: 600px;
+      height: 600px;
+    }
+  </style>
+  <script>
+    function order() {
+      alert('주문이 완료되었습니다.')
+    }
+  </script>
+</head>
+
+<body>
+  <div class="card-img"></div>
+  <br>
+  <div class="input_body">
+    <span style="font-weight: bold; font-size: 30px;">핑크퐁 머그컵 </span> 가격:999,000원
+    <p> 귀여운 머그컵 초특가 세일입니다. 상어가족도 탐내는 머그컵이 단돈 999,000원. 누구보다 빠르게 남들과는 다른 인싸가 되시려면 얼릉 구매하세요.</p>
+
+    <span style="font-weight: bold; font-size: 30px;">주문하기</span>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">주문자 성함</span>
+      </div>
+      <input type="text" class="form-control" aria-label="Sizing example input"
+        aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">수량</label>
+      </div>
+      <select class="custom-select" id="inputGroupSelect01">
+        <option selected>수량을 선택하세요</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="3">4</option>
+        <option value="3">5</option>
+      </select>
+    </div>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">주소</span>
+      </div>
+      <input type="text" class="form-control" aria-label="Sizing example input"
+        aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">전화번호</span>
+      </div>
+      <input type="text" class="form-control" aria-label="Sizing example input"
+        aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="order-box">
+      <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
+    </div>
+  </div>
+</body>
+
+</html>
