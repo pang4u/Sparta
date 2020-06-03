@@ -12,52 +12,90 @@
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
     crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
 
-  <title>스파르타코딩클럽 | 부트스트랩 연습하기</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+  <title>스파르타코딩클럽 | 나홀로메모장</title>
 
-  <style>
+  <!-- 구글폰트 -->
+  <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+  <!-- style -->
+  <style type="text/css">
     * {
-      font-family: 'Jua', sans-serif;
+      font-family: 'Stylish', sans-serif;
     }
 
     .wrap {
-      margin: auto;
       width: 900px;
+      margin: auto;
     }
 
     .comment {
-      font-weight: bold;
       color: blue;
+      font-weight: bold;
     }
 
-    .posting-box {
-      margin: 10px auto 30px auto;
+    #post-box {
       width: 500px;
-
-      border: 3px solid black;
+      margin: 20px auto;
+      padding: 50px;
+      border: black solid;
       border-radius: 5px;
-
-      padding: 25px;
+      display: none;
     }
   </style>
   <script>
+    $(document).ready(function () {
+      $('#cards-box').empty('');
+      listing();
+    });
+
+    function listing() {
+      $.ajax({
+        type: "GET",
+        url: "http://spartacodingclub.shop/post",
+        data: {},
+        success: function (response) {
+          let articles = response['articles'];
+          for (let i = 0; i < articles.length; i++) {
+            let article = articles[i];
+            make_card(article['comment'], article['desc'], article['image'], article['title'], article['url'])
+          }
+        }
+      })
+    }
+    function make_card(comment, desc, image, title, url) {
+      let temp_html = `<div class="card">
+                                <img class="card-img-top" src="${image}" alt="Card image cap">
+                                <div class="card-body">
+                                <a href="${url}" target="_blank" class="card-title">${title}</a>
+                                <p class="card-text">${desc}</p>
+                                <p class="card-text comment">${comment}</p>
+                                </div>
+                            </div>`;
+      $('#cards-box').append(temp_html);
+    }
+
     function openclose() {
-      let status = $('#post-box').css('display');
-      if (status == 'block') {
-        $('#post-box').hide()
-        $('#posting-box-btn').text('포스팅박스 열기')
+      // id 값 post-box의 display 값이 block 이면
+      if ($('#post-box').css('display') == 'block') {
+        // post-box를 가리고
+        $('#post-box').hide();
+        $('#btn-posting-box').text('포스팅 박스 열기');
       } else {
-        $('#post-box').show()
-        $('#posting-box-btn').text('포스팅박스 닫기')
+        // 아니면 post-box를 펴라
+        $('#post-box').show();
+        $('#btn-posting-box').text('포스팅 박스 닫기');
       }
     }
   </script>
@@ -70,67 +108,79 @@
       <p class="lead">중요한 링크를 저장해두고, 나중에 볼 수 있는 공간입니다</p>
       <hr class="my-4">
       <p class="lead">
-        <a id="posting-box-btn" onclick="openclose()" class="btn btn-primary btn-lg" href="#" role="button">포스팅박스 열기</a>
+        <button id="btn-posting-box" onclick="openclose()" class="btn btn-primary btn-lg">포스팅박스 열기</button>
       </p>
     </div>
-    <div class="posting-box" id="post-box">
-      <div class="form-group">
-        <label for="exampleInputEmail1">아티클 URL</label>
-        <input id="post-url" type="email" class="form-control" aria-describedby="emailHelp" placeholder="">
+    <div class="form-post" id="post-box">
+      <div>
+        <div class="form-group">
+          <label for="exampleFormControlInput1">아티클 URL</label>
+          <input id="post-url" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">간단 코멘트</label>
+          <textarea class="form-control" rows="2"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary">기사저장</button>
       </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">간단 코멘트</label>
-        <input type="password" class="form-control" placeholder="">
-      </div>
-      <button type="submit" class="btn btn-primary">기사 저장</button>
     </div>
-    <div class="card-columns" id="cards-box">
+    <div id="cards-box" class="card-columns">
       <div class="card">
         <img class="card-img-top"
-          src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+          src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
           alt="Card image cap">
         <div class="card-body">
-          <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+          <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
           <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
           <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
         </div>
       </div>
       <div class="card">
         <img class="card-img-top"
-          src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+          src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
           alt="Card image cap">
         <div class="card-body">
-          <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+          <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
           <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
           <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
         </div>
       </div>
       <div class="card">
         <img class="card-img-top"
-          src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+          src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
           alt="Card image cap">
         <div class="card-body">
-          <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+          <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
           <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
           <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
         </div>
       </div>
       <div class="card">
         <img class="card-img-top"
-          src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+          src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
           alt="Card image cap">
         <div class="card-body">
-          <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+          <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
           <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
           <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
         </div>
       </div>
       <div class="card">
         <img class="card-img-top"
-          src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+          src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
           alt="Card image cap">
         <div class="card-body">
-          <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+          <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+          <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+          <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img class="card-img-top"
+          src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+          alt="Card image cap">
+        <div class="card-body">
+          <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
           <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
           <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
         </div>
