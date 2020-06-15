@@ -53,6 +53,10 @@
       text-align: center;
     }
 
+    .orders {
+      margin-top: 50px;
+    }
+
     .card-img {
       background-image: url('https://store-cf.pinkfong.com/__sized__/products/IT267/b3/32/5b/12514fafb867652560728715-crop-c0-5__0-5-600x600-85.jpg');
       background-position: center;
@@ -73,7 +77,9 @@
           let currencyAPI = response[1]['rate']
           $('#currency').append(currencyAPI)
         }
-      })
+      });
+      $('#orders-box').html('');
+      listing();
     })
 
     function isCelluar(asValue) {
@@ -88,18 +94,67 @@
       let orderPhone = $('#orderPhone').val();
       if (orderName == '') {
         alert('주문자 이름을 입력해주세요');
+        $('#orderName').focus();
+        return;
       } else if (orderSelect == '') {
         alert('수량을 선택하세요');
+        $('#orderSelect').focus();
+        return;
       } else if (orderAddress == '') {
         alert('주소를 입력해주세요');
+        $('#orderAddress').focus();
+        return;
       } else if (orderPhone == '') {
         alert('전화번호를 입력해주세요');
-      } else if (isCelluar(orderPhone) != true ) {
+        $('#orderPhone').focus();
+        return;
+      } else if (isCelluar(orderPhone) != true) {
         alert('010-XXXX-XXXX 형식으로 올바른 전화번호를 입력해주세요');
-      } else {
-        alert('주문이 완료되었습니다');
+        $('#orderPhone').focus();
+        return;
       }
+
+      $.ajax({
+        type: "POST",
+        url: "/orders",
+        data: { orderName_give: orderName, orderSelect_give: orderSelect, orderAddress_give: orderAddress, orderPhone_give: orderPhone },
+        success: function (response) {
+          if (response['result'] == 'success') {
+            alert(response['msg']);
+            window.location.reload();
+          }
+        }
+      })
     }
+
+    function listing() {
+      $.ajax({
+        type: "GET",
+        url: "/orders",
+        data: {},
+        success: function (response) {
+          if (response['result'] == 'success') {
+            let orders = response['orders'];
+            for (let i = 0; i < orders.length; i++) {
+              make_list(orders[i]['orderName'], orders[i]['orderSelect'], orders[i]['orderAddress'], orders[i]['orderPhone']);
+            }
+          } else {
+            alert('주문정보를 받아오지 못했습니다');
+          }
+        }
+      })
+    }
+
+    function make_list(orderName, orderSelect, orderAddress, orderPhone) {
+      let temp_html = `<tr>
+                        <td>${orderName}</td>
+                        <td>${orderSelect}</td>
+                        <td>${orderAddress}</td>
+                        <td>${orderPhone}</td>
+                    </tr>`;
+      $('#orders-box').append(temp_html);
+    }
+
   </script>
 </head>
 
@@ -150,6 +205,26 @@
     </div>
     <div class="order-box">
       <button onclick="orderItem()" type="button" class="btn btn-primary">주문하기</button>
+    </div>
+    <div class="orders">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">이름</th>
+            <th scope="col">수량</th>
+            <th scope="col">주소</th>
+            <th scope="col">전화번호</th>
+          </tr>
+        </thead>
+        <tbody id="orders-box">
+          <tr>
+            <td>Mark</td>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </body>
