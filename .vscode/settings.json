@@ -1,3 +1,4 @@
 {
-  "python.pythonPath": "/Users/ddii/Desktop/Sparta/venv/bin/python3"
+  "python.pythonPath": "/usr/local/bin/python",
+  "git.ignoreLimitWarning": true
 }
