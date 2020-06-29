@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+  <title>trackerHub Test</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      font-family: 'Roboto Mono', sans-serif;
+    }
+
+    .wrap {
+      margin: auto;
+      width: 600px;
+    }
+
+    .comment {
+      font-weight: bold;
+      color: blue;
+    }
+
+    .input_body {
+      margin: auto;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      width: 650px;
+    }
+
+    .repos-box {
+      width: 650px;
+      text-align: center;
+    }
+
+    .repos {
+      margin-top: 50px;
+    }
+  </style>
+  <script>
+
+    $(document).ready(function () {
+      $('#repos-box').html('');
+      getRepo();
+    })
+
+    function validURL(trackerURL) {
+      var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + //port
+        '(\\?[;&amp;a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$', 'i');
+      return pattern.test(trackerURL);
+    }
+
+    function registTracker() {
+      let trackerGithubUrl = $('#trackerGithubUrl').val();
+      let trackerComment = $('#trackerComment').val();
+      if (trackerGithubUrl == '') {
+        alert('Github URL을 입력하세요');
+        $('#trackerGithubUrl').focus();
+        return;
+      } else if (validURL(trackerGithubUrl) != true) {
+        alert('올바른 URL 형식을 입력해주세요');
+        $('#trackerGithubUrl').focus();
+        // parsing 해서 api 형태로 바꿈, 백엔드에서 구현하는게 더 맞을것 같음.
+        return;
+      } else if (trackerComment == '') {
+        alert('Comment를 입력해주세요');
+        $('#trackerComment').focus();
+        return;
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "/addRepo",
+        data: { trackerGithubUrl: trackerGithubUrl, trackerComment: trackerComment },
+        success: function (response) {
+          if (response['result'] == 'success') {
+            alert(response['msg']);
+            window.location.reload();
+          }
+        }
+      })
+    }
+
+    function getRepo() {
+      $('#repos-box').html('');
+      $.ajax({
+        type: "GET",
+        url: "/getRepo",
+        data: {},
+        success: function (response) {
+          if (response['result'] == 'success') {
+            let repos = response['repos'];
+            for (let i = 0; i < repos.length; i++) {
+              make_list(repos[i]['trackerContent']['html_url'], repos[i]['trackerComment']);
+            }
+            // alert('success');
+          } else {
+            alert('정보를 받아오지 못함');
+          }
+        }
+      })
+    }
+
+    function make_list(trackerGithubUrl, trackerComment) {
+      let temp_html = `<tr>
+                        <td>${trackerGithubUrl}</td>
+                        <td>${trackerComment}</td>
+                      </tr>`;
+      $('#repos-box').append(temp_html);
+    }
+
+  </script>
+</head>
+
+<body>
+  <div class="input_body">
+    <span style="font-weight: bold; font-size: 30px;">Git Repository Tracker</span>
+    <p>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">tracker</span>
+      </div>
+      <input type="text" id="trackerGithubUrl" class="form-control" aria-label="Sizing example input"
+        aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Comment</span>
+      </div>
+      <input type="text" id="trackerComment" class="form-control" aria-label="Sizing example input"
+        aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="order-box">
+      <button onclick="registTracker()" type="button" class="btn btn-primary">Summit</button>
+      <button onclick="getRepo()" type="button" class="btn btn-primary">GET Repo</button>
+    </div>
+    <div class="repos">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">URL</th>
+            <th scope="col">Comment</th>
+          </tr>
+        </thead>
+        <tbody id="repos-box">
+          <tr>
+            <td>Mark</td>
+            <td>Mark</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+</body>
+
+</html>
